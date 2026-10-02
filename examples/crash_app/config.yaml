@@ -1,0 +1,11 @@
+# 종료형 오류 예제 설정
+# 주의: 이 폴더에서 직접 실행하면 예제 소스가 수정됩니다. run_demo.py는 복사본에서 실행합니다.
+project_dir: .
+mode: oneshot
+app_command: [python, app.py]
+test_command: [python, -m, pytest, -q]
+max_repairs: 3
+timeouts:
+  app: 30
+engine:
+  type: codex

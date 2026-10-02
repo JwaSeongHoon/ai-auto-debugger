@@ -1,0 +1,36 @@
+# AI Auto Debugger 설정 템플릿
+# 사용: python auto_repair.py --config config.yaml
+#
+# project_dir를 실제 프로젝트 경로로 바꿔서 사용하세요.
+# (상대 경로는 이 설정 파일 위치 기준)
+
+project_dir: ./my_app
+
+# oneshot: 앱이 끝날 때까지 기다린 뒤 종료 코드로 판정
+# service: 앱을 띄워 두고 stderr와 로그 파일의 Traceback을 감시
+mode: oneshot
+
+app_command: [python, app.py]
+test_command: [python, -m, pytest, -q]   # 없으면 null
+smoke_command: null                      # 앱 정상 실행 후 추가로 돌릴 확인 명령
+
+max_repairs: 3        # 앱 오류에 대한 최대 복구 회차
+max_test_fixes: 2     # 한 회차 안에서 테스트 실패 시 엔진을 다시 부르는 횟수
+
+timeouts:             # 초 단위, null이면 제한 없음
+  app: 60             # oneshot 모드에서 앱이 이 시간 안에 끝나지 않으면 오류로 간주
+  test: 300
+  engine: 900
+
+service:              # mode: service일 때만 사용
+  log_file: error.log
+  healthy_after: 10   # 이 시간 동안 오류가 없으면 정상으로 판정
+  poll_interval: 0.5
+  keep_running: false # true면 정상 판정 없이 앱이 끝날 때까지 계속 감시
+
+engine:
+  type: codex         # codex | claude | custom
+  command: null       # 지정하면 기본 명령 대신 사용 (프롬프트는 stdin으로 전달됨)
+
+rollback_on_failure: true   # 끝내 못 고치면 수정 전 상태로 복원
+logs_dir: logs
